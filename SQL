@@ -1,0 +1,18 @@
+
+
+
+SELECT (В этом разделе мы выбираем необходимые поля для вывода: имя, отчество, фамилию, дату рождения и родственную связь)
+    p.givenName AS FirstName,
+    p.middleName AS MiddleName,
+    p.familyName AS LastName,
+    p.birthDate AS BirthDate,
+    d.contactRelationship AS Relationship
+FROM (Начинаем с таблицы `HPPersonGeneric`, где запрашиваем данные о родственниках)
+    HPPersonGeneric AS p
+JOIN (Объединяем таблицу `HPPersonGeneric` с таблицей `HPPersonDependant`,
+используя `sysId` из первой таблицы (родственника) и `HPRelatedPersonSysId` из второй таблицы (родственные связи))
+    HPPersonDependant AS d ON p.sysId = d.HPRelatedPersonSysId
+JOIN (объединяем таблицу `HPPersonGeneric`, но теперь используем `HPPersonGenericSysId` для получения информации о сотруднике)
+    HPPersonGeneric AS emp ON emp.sysId = d.HPPersonGenericSysId
+WHERE (Фильтруем результаты, чтобы получить только родственников сотрудника с заданным `personId`)
+    emp.personId = 'test';
